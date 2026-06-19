@@ -2,256 +2,346 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Product, OrderItem, ClientInfo } from '@/lib/types'
-import { PRODUCTS_BY_CATEGORY, CATEGORIES } from '@/lib/constants'
-import { ProductDetailCard } from '@/components/product-detail-card'
+import { ClientInfo, OrderItem, SignItem } from '@/lib/types'
+import { LOCATIONS, SIGNS_BY_LOCATION } from '@/lib/constants'
+import { SignDetailCard } from '@/components/sign-detail-card'
 import { ItemSummary } from '@/components/item-summary'
-import { ChevronLeft, Plus } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+
+const REQUIRED_FIELDS: (keyof ClientInfo)[] = ['fullName', 'location', 'email']
+
+const inputClass =
+  'w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300'
+
+const labelClass = 'block text-xs font-medium text-gray-600 mb-1.5'
 
 export function WarrantyForm() {
   const router = useRouter()
-  const [items, setItems] = useState<OrderItem[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<string>('')
-  const [showProductSelector, setShowProductSelector] = useState(false)
 
   const [clientInfo, setClientInfo] = useState<ClientInfo>({
-    firstName: '',
-    lastName: '',
+    fullName: '',
+    location: '',
     email: '',
-    company: '',
-    phone: '',
+    propertyAddress: '',
   })
 
-  const [formData, setFormData] = useState({
-    quantity: 1,
-    serialNumber: '',
-    notes: '',
-  })
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof ClientInfo, string>>>({})
+  const [items, setItems] = useState<OrderItem[]>([])
+  const [itemDescriptions, setItemDescriptions] = useState<Record<string, string>>({})
+  const [showSelector, setShowSelector] = useState(false)
+  const [selectedSignId, setSelectedSignId] = useState('')
 
-  const handleAddItem = (product: Product) => {
-    const newItem: OrderItem = {
-      id: `${product.id}-${Date.now()}`,
-      product,
-      quantity: formData.quantity,
-      serialNumber: formData.serialNumber,
-      notes: formData.notes,
-    }
-    setItems([...items, newItem])
-    setFormData({ quantity: 1, serialNumber: '', notes: '' })
-    setShowProductSelector(false)
+  const requiredComplete = REQUIRED_FIELDS.every((f) => clientInfo[f].trim() !== '')
+
+  const locationSigns: SignItem[] = SIGNS_BY_LOCATION[clientInfo.location] ?? []
+
+  const selectedSign = locationSigns.find((s) => s.id === selectedSignId) ?? null
+
+  const validateRequired = () => {
+    const errors: Partial<Record<keyof ClientInfo, string>> = {}
+    REQUIRED_FIELDS.forEach((f) => {
+      if (!clientInfo[f].trim()) errors[f] = 'This field is required'
+    })
+    setFieldErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
+  const handleConfirmItem = () => {
+    if (!selectedSign) return
+    const uid = `${selectedSign.id}-${Date.now()}`
+    setItems((prev) => [...prev, { id: uid, sign: selectedSign, warrantyDescription: '' }])
+    setItemDescriptions((prev) => ({ ...prev, [uid]: '' }))
+    setSelectedSignId('')
+    setShowSelector(false)
   }
 
   const handleRemoveItem = (id: string) => {
-    setItems(items.filter((item) => item.id !== id))
+    setItems((prev) => prev.filter((i) => i.id !== id))
+    setItemDescriptions((prev) => {
+      const next = { ...prev }
+      delete next[id]
+      return next
+    })
   }
 
-  const handlePreview = () => {
-    console.log('Preview Request:', { clientInfo, items })
-    alert('Request preview would be shown here. Check console for details.')
+  const handleDescriptionChange = (id: string, value: string) => {
+    setItemDescriptions((prev) => ({ ...prev, [id]: value }))
   }
 
-  const handleBackHome = () => {
-    router.push('/')
+  const handleSendRequest = () => {
+    if (!validateRequired()) return
+    alert('Request submitted! Modulex will be in touch.')
   }
 
-  const availableProducts = selectedCategory
-    ? PRODUCTS_BY_CATEGORY[selectedCategory as keyof typeof PRODUCTS_BY_CATEGORY] || []
-    : []
+  const handleSelectItemClick = () => {
+    if (!validateRequired()) return
+    setShowSelector(true)
+    setSelectedSignId('')
+  }
 
   return (
-    <div className="min-h-screen bg-white py-8">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
-        <button
-          onClick={handleBackHome}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium mb-8 transition-colors"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          Back to Home
-        </button>
+    <div className="min-h-screen bg-white text-gray-900">
+      {/* Top nav bar */}
+      <div className="border-b border-gray-200 bg-white">
+        <div className="max-w-6xl mx-auto px-4 flex items-center justify-between py-3">
+          <button
+            onClick={() => router.push('/')}
+            className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Back to Home
+          </button>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">Warranty Request Form</h1>
+          {/* Tab switcher */}
+          <div className="flex items-center gap-1 bg-gray-100 rounded-full p-1">
+            {['Warranty Request', 'Exterior Signs', 'Interior Signs'].map((tab) => (
+              <button
+                key={tab}
+                className="px-4 py-1.5 rounded-full text-xs font-medium transition-colors"
+                style={
+                  tab === 'Warranty Request'
+                    ? { backgroundColor: '#111827', color: '#fff' }
+                    : { color: '#6b7280' }
+                }
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* Spacer to balance the back button */}
+          <div className="w-24" />
+        </div>
+      </div>
+
+      {/* Logos */}
+      <header className="flex flex-col items-center pt-8 pb-6 px-4 border-b border-gray-100">
+        <div className="flex flex-col items-center gap-3">
+          <span className="text-xs font-medium text-gray-400 uppercase tracking-widest">
+            Belden &mdash; Modulex
+          </span>
+        </div>
+      </header>
+
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Page heading */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-gray-900">Request for Warranty / Replacement</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Select your signage product or service required
+          </p>
+          <button className="mt-1 text-sm text-gray-400 underline underline-offset-2 hover:text-gray-700 transition-colors">
+            How to place an Order
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Form */}
+          {/* ── Left column ──────────────────────────── */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Client Information */}
-            <section className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
-              <h2 className="text-base font-semibold text-gray-900 mb-4">Client Information</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  placeholder="First Name"
-                  value={clientInfo.firstName}
-                  onChange={(e) => setClientInfo({ ...clientInfo, firstName: e.target.value })}
-                  className="col-span-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                />
-                <input
-                  type="text"
-                  placeholder="Last Name"
-                  value={clientInfo.lastName}
-                  onChange={(e) => setClientInfo({ ...clientInfo, lastName: e.target.value })}
-                  className="col-span-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={clientInfo.email}
-                  onChange={(e) => setClientInfo({ ...clientInfo, email: e.target.value })}
-                  className="col-span-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                />
-                <input
-                  type="text"
-                  placeholder="Company"
-                  value={clientInfo.company}
-                  onChange={(e) => setClientInfo({ ...clientInfo, company: e.target.value })}
-                  className="col-span-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                />
-                <input
-                  type="tel"
-                  placeholder="Phone"
-                  value={clientInfo.phone}
-                  onChange={(e) => setClientInfo({ ...clientInfo, phone: e.target.value })}
-                  className="col-span-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                />
+
+            {/* Client & Project Information */}
+            <section
+              className="bg-white border border-gray-200 rounded-xl p-6"
+              style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}
+            >
+              <h2 className="text-base font-semibold text-gray-900 mb-5">
+                Client &amp; Project Information
+              </h2>
+
+              {/* 2×2 grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Full Name */}
+                <div>
+                  <label className={labelClass}>
+                    Full Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={clientInfo.fullName}
+                    onChange={(e) => {
+                      setClientInfo({ ...clientInfo, fullName: e.target.value })
+                      if (fieldErrors.fullName) setFieldErrors({ ...fieldErrors, fullName: undefined })
+                    }}
+                    className={`${inputClass} ${fieldErrors.fullName ? 'border-red-400 focus:ring-red-300' : ''}`}
+                  />
+                  {fieldErrors.fullName && (
+                    <p className="mt-1 text-xs text-red-500">{fieldErrors.fullName}</p>
+                  )}
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label className={labelClass}>
+                    Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={clientInfo.email}
+                    onChange={(e) => {
+                      setClientInfo({ ...clientInfo, email: e.target.value })
+                      if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: undefined })
+                    }}
+                    className={`${inputClass} ${fieldErrors.email ? 'border-red-400 focus:ring-red-300' : ''}`}
+                  />
+                  {fieldErrors.email && (
+                    <p className="mt-1 text-xs text-red-500">{fieldErrors.email}</p>
+                  )}
+                </div>
+
+                {/* Office / Location */}
+                <div>
+                  <label className={labelClass}>
+                    Office / Location / Plant Name <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={clientInfo.location}
+                    onChange={(e) => {
+                      setClientInfo({ ...clientInfo, location: e.target.value })
+                      if (fieldErrors.location) setFieldErrors({ ...fieldErrors, location: undefined })
+                      // Reset sign selector when location changes
+                      setShowSelector(false)
+                      setSelectedSignId('')
+                      setItems([])
+                      setItemDescriptions({})
+                    }}
+                    className={`${inputClass} ${fieldErrors.location ? 'border-red-400 focus:ring-red-300' : ''}`}
+                  >
+                    <option value="">Select your Office / Location / Plant Name</option>
+                    {LOCATIONS.map((loc) => (
+                      <option key={loc} value={loc}>
+                        {loc}
+                      </option>
+                    ))}
+                  </select>
+                  {fieldErrors.location && (
+                    <p className="mt-1 text-xs text-red-500">{fieldErrors.location}</p>
+                  )}
+                </div>
+
+                {/* Property Address */}
+                <div>
+                  <label className={labelClass}>Property Address</label>
+                  <input
+                    type="text"
+                    placeholder="Enter property address"
+                    value={clientInfo.propertyAddress}
+                    onChange={(e) => setClientInfo({ ...clientInfo, propertyAddress: e.target.value })}
+                    className={inputClass}
+                  />
+                </div>
               </div>
+
+              <p className="mt-4 text-xs text-gray-400">
+                Fields marked <span className="text-red-500">*</span> are required before continuing.
+              </p>
             </section>
 
-            {/* Product Selection */}
-            <section className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
-              <h2 className="text-base font-semibold text-gray-900 mb-4">Add Products</h2>
+            {/* Sign selector heading */}
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-3">
+                Please select the item from your site that requires Warranty / Replacement
+              </p>
 
-              {!showProductSelector ? (
+              {/* "Select item" pill button */}
+              {!showSelector && (
                 <button
-                  onClick={() => setShowProductSelector(true)}
-                  className="w-full flex items-center justify-center gap-2 text-sm font-medium text-white py-2.5 rounded-lg transition-colors"
+                  onClick={handleSelectItemClick}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium text-white transition-colors"
                   style={{ backgroundColor: '#111827' }}
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#374151')}
                   onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#111827')}
                 >
-                  <Plus className="w-4 h-4" />
-                  Add Product Item
+                  Select item
+                  <ChevronRight className="w-4 h-4" />
                 </button>
-              ) : (
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-medium text-gray-600 block mb-1.5">
-                      Category
-                    </label>
+              )}
+
+              {/* Dropdown when open */}
+              {showSelector && (
+                <div
+                  className="bg-white border border-gray-200 rounded-xl p-4 space-y-3"
+                  style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}
+                >
+                  {locationSigns.length === 0 ? (
+                    <p className="text-sm text-gray-400 italic">
+                      Sign list not yet available for this location.
+                    </p>
+                  ) : (
                     <select
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                      value={selectedSignId}
+                      onChange={(e) => setSelectedSignId(e.target.value)}
+                      className={inputClass}
                     >
-                      <option value="">Select Category...</option>
-                      {CATEGORIES.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat}
+                      <option value="">Select item...</option>
+                      {locationSigns.map((sign) => (
+                        <option key={sign.id} value={sign.id}>
+                          {sign.id} - {sign.name}
                         </option>
                       ))}
                     </select>
-                  </div>
-
-                  {selectedCategory && (
-                    <div>
-                      <label className="text-xs font-medium text-gray-600 block mb-1.5">
-                        Product
-                      </label>
-                      <select
-                        onChange={(e) => {
-                          const product = availableProducts.find((p) => p.id === e.target.value)
-                          if (product) {
-                            handleAddItem(product)
-                          }
-                        }}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                        defaultValue=""
-                      >
-                        <option value="">Select Product...</option>
-                        {availableProducts.map((product) => (
-                          <option key={product.id} value={product.id}>
-                            {product.name} ({product.partNumber})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
                   )}
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-xs font-medium text-gray-600 block mb-1.5">
-                        Quantity
-                      </label>
-                      <input
-                        type="number"
-                        min="1"
-                        value={formData.quantity}
-                        onChange={(e) =>
-                          setFormData({ ...formData, quantity: parseInt(e.target.value) || 1 })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium text-gray-600 block mb-1.5">
-                        Serial Number
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.serialNumber}
-                        onChange={(e) =>
-                          setFormData({ ...formData, serialNumber: e.target.value })
-                        }
-                        placeholder="SN-12345"
-                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-medium text-gray-600 block mb-1.5">
-                      Notes
-                    </label>
-                    <textarea
-                      value={formData.notes}
-                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                      placeholder="Additional details about this item..."
-                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 min-h-24 resize-none"
-                    />
-                  </div>
 
                   <div className="flex gap-2">
                     <button
-                      onClick={() => setShowProductSelector(false)}
+                      onClick={() => { setShowSelector(false); setSelectedSignId('') }}
                       className="flex-1 bg-gray-100 text-gray-700 text-sm font-medium py-2 rounded-lg hover:bg-gray-200 transition-colors"
                     >
                       Cancel
                     </button>
+                    {selectedSign && (
+                      <button
+                        onClick={handleConfirmItem}
+                        className="flex-1 text-white text-sm font-medium py-2 rounded-lg transition-colors"
+                        style={{ backgroundColor: '#111827' }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#374151')}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#111827')}
+                      >
+                        Add Item
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
-            </section>
+            </div>
 
-            {/* Added Items */}
+            {/* Added sign detail cards */}
             {items.length > 0 && (
-              <section className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
-                <h2 className="text-base font-semibold text-gray-900 mb-4">Added Items</h2>
-                <div className="space-y-4">
-                  {items.map((item) => (
-                    <ProductDetailCard
-                      key={item.id}
-                      item={item}
-                      onRemove={() => handleRemoveItem(item.id)}
-                    />
-                  ))}
-                </div>
-              </section>
+              <div className="space-y-6">
+                {items.map((item) => (
+                  <SignDetailCard
+                    key={item.id}
+                    item={item}
+                    warrantyDescription={itemDescriptions[item.id] ?? ''}
+                    onDescriptionChange={(val) => handleDescriptionChange(item.id, val)}
+                    onRemove={() => handleRemoveItem(item.id)}
+                  />
+                ))}
+
+                {/* Add more items */}
+                {!showSelector && (
+                  <button
+                    onClick={() => { setShowSelector(true); setSelectedSignId('') }}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium text-white transition-colors"
+                    style={{ backgroundColor: '#111827' }}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#374151')}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#111827')}
+                  >
+                    Add more items
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
             )}
           </div>
 
-          {/* Right Column - Summary Sidebar */}
+          {/* ── Right column — sticky summary ─────── */}
           <div>
-            <ItemSummary items={items} onPreview={handlePreview} />
+            <ItemSummary
+              items={items}
+              onSend={handleSendRequest}
+            />
           </div>
         </div>
       </div>

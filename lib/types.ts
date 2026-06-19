@@ -1,24 +1,30 @@
-export type ProductCategory = 'Exterior' | 'Interior' | 'Warranty'
+export interface SignDimensions {
+  h: string
+  w: string
+  d: string
+}
 
-export interface Product {
+export interface SignItem {
   id: string
   name: string
-  category: ProductCategory
-  partNumber: string
+  code: string
+  dimensions: SignDimensions
+  illumination: boolean
+  backerNeeded: boolean
+  quantity: number
+  visualImage: string
+  implImage: string
 }
 
 export interface OrderItem {
   id: string
-  product: Product
-  quantity: number
-  serialNumber: string
-  notes: string
+  sign: SignItem
+  warrantyDescription: string
 }
 
 export interface ClientInfo {
-  firstName: string
-  lastName: string
+  fullName: string
+  location: string
   email: string
-  company: string
-  phone: string
+  propertyAddress: string
 }

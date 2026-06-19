@@ -2,55 +2,43 @@
 
 import { useRouter } from 'next/navigation'
 import { BeldenLogo } from '@/components/belden-logo'
+import { ModulexLogo } from '@/components/modulex-logo'
 
 interface CardDef {
   title: string
+  description: string
   image: string
   alt: string
-  bullets: string[]
   buttonLabel: string
   buttonAction: 'coming-soon' | 'navigate'
+  href?: string
 }
 
 const CARDS: CardDef[] = [
   {
+    title: 'Warranty Request',
+    description: 'Existing signs that require repair or replacement',
+    image: '/images/warranty-card.png',
+    alt: 'Chrome purple channel letters close-up',
+    buttonLabel: 'Configure Warranty Request',
+    buttonAction: 'navigate',
+    href: '/warranty',
+  },
+  {
     title: 'Exterior Signs',
-    image: '/images/exterior-sign.jpg',
-    alt: 'Belden exterior building sign with channel letters on a gray facade',
-    bullets: [
-      'Channel letters & dimensional signs',
-      'Monument & pylon signs',
-      'Illuminated cabinet signs',
-      'Wayfinding & directional',
-    ],
+    description: 'New signs defined for exterior use in the Brand Guidelines',
+    image: '/images/exterior-card.png',
+    alt: 'Belden exterior building sign',
     buttonLabel: 'Coming Soon',
     buttonAction: 'coming-soon',
   },
   {
     title: 'Interior Signs',
-    image: '/images/interior-sign.jpg',
-    alt: 'Large chrome purple Belden B logomark mounted on a dark navy wall',
-    bullets: [
-      'Lobby & reception signage',
-      'Dimensional wall letters',
-      'ADA compliant signage',
-      'Directional & suite signs',
-    ],
+    description: 'New signs defined for interior use in the Brand Guidelines',
+    image: '/images/interior-card.jpg',
+    alt: 'Belden chrome logomark on interior wall',
     buttonLabel: 'Coming Soon',
     buttonAction: 'coming-soon',
-  },
-  {
-    title: 'Warranty Request',
-    image: '/images/interior-sign.jpg',
-    alt: 'Belden interior signage representing warranty coverage',
-    bullets: [
-      'Submit warranty claims online',
-      'Track request status',
-      'Attach supporting documents',
-      'Receive confirmation quickly',
-    ],
-    buttonLabel: 'Configure Warranty Request',
-    buttonAction: 'navigate',
   },
 ]
 
@@ -60,35 +48,37 @@ export function LandingPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900">
       {/* Header */}
-      <header className="flex flex-col items-center pt-12 pb-8 px-4">
+      <header className="flex flex-col items-center pt-10 pb-8 px-4">
         <BeldenLogo width={160} />
-        <div className="mt-4 w-[280px] h-px bg-gray-200" />
-        <p className="mt-3 text-sm font-bold tracking-widest text-gray-700 lowercase">
-          modul<span style={{ color: '#F47920' }}>e</span>x
-        </p>
+        <div className="mt-4 w-72 h-px bg-gray-200" />
+        <div className="mt-4">
+          <ModulexLogo width={130} />
+        </div>
       </header>
 
-      {/* Important Notice */}
-      <div className="max-w-4xl mx-auto px-4 mb-10">
-        <div className="bg-gray-100 rounded-lg px-6 py-4 text-sm text-gray-700 leading-relaxed">
-          <span className="font-semibold">Important Notice:</span> This warranty ordering tool is
-          intended for use by authorised Belden partners and distributors only. All warranty
-          requests are subject to review and approval. Please ensure all submitted information is
-          accurate and complete before submission.
+      <main className="max-w-5xl mx-auto px-4 pb-16">
+        {/* Page heading */}
+        <div className="text-center mb-2">
+          <h1 className="text-2xl font-bold text-gray-900">Request for Quote / Order</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Select your signage category to begin configuring your request
+          </p>
+          <button className="mt-2 text-sm text-gray-500 underline underline-offset-2 hover:text-gray-800 transition-colors">
+            How to place an Order
+          </button>
         </div>
-      </div>
 
-      {/* Cards */}
-      <main className="max-w-4xl mx-auto px-4 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
           {CARDS.map((card) => (
             <div
               key={card.title}
               className="bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col items-center p-7"
+              style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}
             >
               {/* Circular image */}
               <div
-                className="mb-5 rounded-full overflow-hidden shadow-md border border-gray-300 flex-shrink-0"
+                className="mb-5 rounded-full overflow-hidden border border-gray-200 flex-shrink-0"
                 style={{ width: 140, height: 140 }}
               >
                 <img
@@ -99,16 +89,14 @@ export function LandingPage() {
               </div>
 
               {/* Title */}
-              <h3 className="text-base font-semibold text-gray-900 mb-3 text-center">{card.title}</h3>
+              <h3 className="text-base font-semibold text-gray-900 mb-2 text-center">
+                {card.title}
+              </h3>
 
-              {/* Bullet list */}
-              <ul className="mb-6 space-y-1 w-full text-center">
-                {card.bullets.map((b) => (
-                  <li key={b} className="text-[13px] text-gray-600">
-                    {b}
-                  </li>
-                ))}
-              </ul>
+              {/* Description */}
+              <p className="text-[13px] text-gray-500 text-center leading-relaxed mb-6 flex-1">
+                {card.description}
+              </p>
 
               {/* Button */}
               {card.buttonAction === 'coming-soon' ? (
@@ -121,7 +109,7 @@ export function LandingPage() {
                 </button>
               ) : (
                 <button
-                  onClick={() => router.push('/warranty')}
+                  onClick={() => router.push(card.href!)}
                   className="w-full py-2.5 rounded-lg text-sm font-medium text-white transition-colors"
                   style={{ backgroundColor: '#111827' }}
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#374151')}
@@ -132,6 +120,18 @@ export function LandingPage() {
               )}
             </div>
           ))}
+        </div>
+
+        {/* Important Notice */}
+        <div className="mt-10 bg-gray-50 border border-gray-200 rounded-xl px-6 py-5">
+          <p className="text-sm font-semibold text-gray-800 mb-2">Important Notice</p>
+          <ul className="text-sm text-gray-600 leading-relaxed space-y-1 list-none">
+            <li>This estimate is provided as a preliminary budget based on the products requested.</li>
+            <li>Prices do not include installation or logistics.</li>
+            <li>A site survey is required to confirm the scope and generate an official quotation.</li>
+            <li>Custom products require additional review and pricing before inclusion in the budget.</li>
+            <li>The amounts shown should be considered a wish list or estimate only. A formal quote will be issued once the survey project is completed.</li>
+          </ul>
         </div>
       </main>
     </div>
