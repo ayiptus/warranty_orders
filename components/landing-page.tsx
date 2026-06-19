@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { BeldenLogo } from '@/components/belden-logo'
+import { ModulexLogo } from '@/components/modulex-logo'
 
 interface CardDef {
   title: string
@@ -63,9 +64,9 @@ export function LandingPage() {
       <header className="flex flex-col items-center pt-12 pb-8 px-4">
         <BeldenLogo width={160} />
         <div className="mt-4 w-[280px] h-px bg-gray-200" />
-        <p className="mt-3 text-sm font-bold tracking-widest text-gray-700 lowercase">
-          modul<span style={{ color: '#F47920' }}>e</span>x
-        </p>
+        <div className="mt-4">
+          <ModulexLogo width={130} />
+        </div>
       </header>
 
       {/* Important Notice */}
