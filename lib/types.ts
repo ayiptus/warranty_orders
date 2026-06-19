@@ -1,10 +1,10 @@
-export type ProductCategory = 'Exterior' | 'Interior' | 'Warranty'
-
 export interface Product {
   id: string
   name: string
-  category: ProductCategory
   partNumber: string
+  category: string
+  description: string
+  image?: string
 }
 
 export interface OrderItem {
@@ -16,9 +16,8 @@ export interface OrderItem {
 }
 
 export interface ClientInfo {
-  firstName: string
-  lastName: string
+  fullName: string
+  location: string
   email: string
-  company: string
-  phone: string
+  propertyAddress: string
 }

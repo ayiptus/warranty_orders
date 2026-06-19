@@ -11,31 +11,16 @@ interface ProductDetailCardProps {
 export function ProductDetailCard({ item, onRemove }: ProductDetailCardProps) {
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-5">
-      {/* Two-column image row */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        <div
-          className="rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center text-xs text-gray-400"
-          style={{ height: 100 }}
-        >
+      {/* Product image */}
+      {item.product.image && (
+        <div className="rounded-lg overflow-hidden mb-4" style={{ height: 100 }}>
           <img
-            src=""
-            alt={`${item.product.name} product render`}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'none' }}
+            src={item.product.image}
+            alt={item.product.name}
+            className="w-full h-full object-cover"
           />
-          Product Image
         </div>
-        <div
-          className="rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center text-xs text-gray-400"
-          style={{ height: 100 }}
-        >
-          <img
-            src=""
-            alt={`${item.product.name} installation photo`}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'none' }}
-          />
-          Install Photo
-        </div>
-      </div>
+      )}
 
       {/* Header row */}
       <div className="flex justify-between items-start mb-3">
