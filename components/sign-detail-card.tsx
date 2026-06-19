@@ -39,43 +39,31 @@ export function SignDetailCard({
         </button>
       </div>
 
-      {/* Two-column image row */}
-      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-4">
-        {/* Visual Representation — wider (3/5) */}
-        <div className="sm:col-span-3">
-          <p className="text-[11px] text-gray-400 mb-1.5">Visual Representation</p>
-          <div
-            className="w-full rounded-lg overflow-hidden bg-gray-100"
-            style={{ aspectRatio: '2 / 1' }}
-          >
-            <img
-              src={sign.visualImage}
-              alt={`${sign.name} visual representation`}
-              className="w-full h-full object-cover"
-            />
-          </div>
-          {/* Dimensions */}
-          <div className="mt-2 text-[11px] text-gray-500 space-y-0.5 leading-relaxed">
-            <p><span className="font-medium text-gray-700">H:</span> {sign.dimensions.h}</p>
-            <p><span className="font-medium text-gray-700">W:</span> {sign.dimensions.w}</p>
-            <p><span className="font-medium text-gray-700">D:</span> {sign.dimensions.d}</p>
-          </div>
+      {/* Image area — single full-width with dual labels */}
+      <div className="mb-4">
+        {/* Labels row */}
+        <div className="flex justify-between mb-2 px-0">
+          <p className="text-[11px] text-gray-400">Visual Representation</p>
+          <p className="text-[11px] text-gray-400">Implementation Photo</p>
         </div>
+        {/* Single full-width image */}
+        <div
+          className="w-full rounded-lg overflow-hidden bg-gray-100"
+          style={{ aspectRatio: '3 / 1' }}
+        >
+          <img
+            src={sign.visualImage}
+            alt={`${sign.name} reference`}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
 
-        {/* Implementation Photo — narrower (2/5) */}
-        <div className="sm:col-span-2">
-          <p className="text-[11px] text-gray-400 mb-1.5">Implementation Photo</p>
-          <div
-            className="w-full rounded-lg overflow-hidden bg-gray-100"
-            style={{ aspectRatio: '4 / 5' }}
-          >
-            <img
-              src={sign.implImage}
-              alt={`${sign.name} implementation photo`}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </div>
+      {/* Dimensions below image */}
+      <div className="mb-4 text-[11px] text-gray-500 space-y-0.5 leading-relaxed">
+        <p><span className="font-medium text-gray-700">H:</span> {sign.dimensions.h}</p>
+        <p><span className="font-medium text-gray-700">W:</span> {sign.dimensions.w}</p>
+        <p><span className="font-medium text-gray-700">D:</span> {sign.dimensions.d}</p>
       </div>
 
       {/* Key-value row */}
