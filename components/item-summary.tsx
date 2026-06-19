@@ -4,34 +4,44 @@ import { OrderItem } from '@/lib/types'
 
 interface ItemSummaryProps {
   items: OrderItem[]
-  onPreview: () => void
+  onSend: () => void
 }
 
-export function ItemSummary({ items, onPreview }: ItemSummaryProps) {
+export function ItemSummary({ items, onSend }: ItemSummaryProps) {
   const hasItems = items.length > 0
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 sticky top-6">
-      <h3 className="text-base font-semibold text-gray-900 mb-4">Request Summary</h3>
-
-      <div className="bg-gray-100 rounded-lg px-4 py-3 mb-5 flex items-center gap-3">
-        <span className="text-3xl font-bold text-gray-900">{items.length}</span>
-        <span className="text-sm text-gray-500">Items Added</span>
+    <div
+      className="bg-white border border-gray-200 rounded-xl p-6 sticky top-6"
+      style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}
+    >
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-4">
+        <h3 className="text-base font-semibold text-gray-900">Items Summary</h3>
+        <span
+          className="text-xs font-medium px-2 py-0.5 rounded-full text-white"
+          style={{ backgroundColor: '#111827' }}
+        >
+          {items.length} {items.length === 1 ? 'item' : 'items'}
+        </span>
       </div>
 
-      {hasItems && (
-        <ul className="space-y-2 mb-5 max-h-48 overflow-y-auto">
+      {/* Item list */}
+      {hasItems ? (
+        <ul className="space-y-2 mb-5 max-h-52 overflow-y-auto">
           {items.map((item) => (
-            <li key={item.id} className="flex justify-between text-sm text-gray-700">
-              <span className="truncate pr-2">{item.product.name}</span>
-              <span className="font-medium flex-shrink-0">&times;{item.quantity}</span>
+            <li key={item.id} className="text-sm text-gray-700 leading-snug">
+              {item.sign.id} &mdash; {item.sign.name}
             </li>
           ))}
         </ul>
+      ) : (
+        <p className="text-sm text-gray-400 italic mb-5">Your cart is empty</p>
       )}
 
+      {/* Send Request button */}
       <button
-        onClick={onPreview}
+        onClick={onSend}
         disabled={!hasItems}
         className="w-full py-2.5 rounded-lg text-sm font-medium text-white transition-colors"
         style={{
@@ -45,8 +55,14 @@ export function ItemSummary({ items, onPreview }: ItemSummaryProps) {
           if (hasItems) e.currentTarget.style.backgroundColor = '#111827'
         }}
       >
-        Preview Request
+        Send Request to Modulex
       </button>
+
+      {/* Disclaimer */}
+      <p className="mt-3 text-[11px] text-gray-400 leading-relaxed">
+        *Modulex will review your request and confirm whether it falls under the Warranty Policies
+        or if there will be any cost associated with replacement or repair services.
+      </p>
     </div>
   )
 }

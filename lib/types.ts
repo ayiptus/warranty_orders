@@ -1,18 +1,25 @@
-export interface Product {
+export interface SignDimensions {
+  h: string
+  w: string
+  d: string
+}
+
+export interface SignItem {
   id: string
   name: string
-  partNumber: string
-  category: string
-  description: string
-  image?: string
+  code: string
+  dimensions: SignDimensions
+  illumination: boolean
+  backerNeeded: boolean
+  quantity: number
+  visualImage: string
+  implImage: string
 }
 
 export interface OrderItem {
   id: string
-  product: Product
-  quantity: number
-  serialNumber: string
-  notes: string
+  sign: SignItem
+  warrantyDescription: string
 }
 
 export interface ClientInfo {

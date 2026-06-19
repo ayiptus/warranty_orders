@@ -1,75 +1,96 @@
-import { Product } from './types'
+import { SignItem } from './types'
 
 export const LOCATIONS = [
   'Cobourg',
-  'Montreal',
+  'Chicago',
   'Nogales',
   'Tijuana',
-  'Chicago',
+  'Montreal',
+  'Cornelius',
+  'Indianapolis',
+  'Richmond I',
+  'Richmond II',
+  'Richmond III',
+  'Santa Clara',
+  'St. Louis',
+  'Tucson',
+  'Shanghai',
+  'Pune Phase 1',
+  'Pune Phase 2',
+  'Singapore',
+  'Bangalore',
+  'Dubai',
+  'Olen',
+  'Neckartenzlingen',
+  'Milan',
+  'Blagnac',
 ]
 
-export const WARRANTY_ITEMS: Product[] = [
-  {
-    id: 'EX-002',
-    name: 'Channel Letters',
-    partNumber: 'EX-002',
-    category: 'Exterior',
-    description: 'Exterior illuminated channel letter sign set mounted on building facade.',
-    image: '/images/exterior-sign.jpg',
-  },
+const DEMO_IMG = '/images/chicago-demo.png'
+
+export const CHICAGO_SIGNS: SignItem[] = [
   {
     id: 'IN-001',
-    name: 'Reception Letters',
-    partNumber: 'IN-001',
-    category: 'Interior',
-    description: 'Dimensional reception area letters for lobby or front desk installations.',
-    image: '/images/interior-sign.jpg',
+    name: 'Reception Letters Reversed Color - Illuminated',
+    code: 'RL.R.96.I',
+    dimensions: {
+      h: `2' 0" (614 mm)`,
+      w: `8' 0" (2438 mm)`,
+      d: `1" (25 mm)`,
+    },
+    illumination: true,
+    backerNeeded: false,
+    quantity: 1,
+    visualImage: DEMO_IMG,
+    implImage: DEMO_IMG,
+  },
+  {
+    id: 'IN-003',
+    name: 'Reception Letters Reversed Color - Non-Illuminated + Backer Panel',
+    code: 'RL.R.60.BP',
+    dimensions: {
+      h: `Letters: 1' 5" (432 mm) — BP: 2' 6" (762 mm)`,
+      w: `Letters: 5' 0" (1524 mm) — BP: 6' 3" (1905 mm)`,
+      d: `Letters: 0.5" (13 mm) — BP: 0.5" (13 mm)`,
+    },
+    illumination: false,
+    backerNeeded: true,
+    quantity: 1,
+    visualImage: DEMO_IMG,
+    implImage: DEMO_IMG,
   },
   {
     id: 'IN-004',
-    name: 'Room ID Insert',
-    partNumber: 'IN-004',
-    category: 'Interior',
-    description: 'Replaceable insert panel for room identification signage systems.',
-    image: '/images/interior-sign.jpg',
+    name: 'Overlay Vinyl',
+    code: 'Custom',
+    dimensions: {
+      h: `1' 9" (533 mm)`,
+      w: `7' 4" (2235 mm)`,
+      d: 'N/A',
+    },
+    illumination: false,
+    backerNeeded: false,
+    quantity: 1,
+    visualImage: DEMO_IMG,
+    implImage: DEMO_IMG,
   },
   {
-    id: 'IN-008',
-    name: 'Room ID',
-    partNumber: 'IN-008',
-    category: 'Interior',
-    description: 'Standard room identification sign with ADA-compliant braille.',
-    image: '/images/interior-sign.jpg',
-  },
-  {
-    id: 'IN-009',
-    name: 'Room ID',
-    partNumber: 'IN-009',
-    category: 'Interior',
-    description: 'Room identification sign — alternate mounting configuration.',
-    image: '/images/interior-sign.jpg',
-  },
-  {
-    id: 'IN-010',
-    name: 'Room ID',
-    partNumber: 'IN-010',
-    category: 'Interior',
-    description: 'Room identification sign with illuminated edge detail.',
-    image: '/images/interior-sign.jpg',
-  },
-  {
-    id: 'IN-011',
-    name: 'Room ID Insert',
-    partNumber: 'IN-011',
-    category: 'Interior',
-    description: 'Replaceable insert panel — large format room identification.',
-    image: '/images/interior-sign.jpg',
+    id: 'IN-006',
+    name: 'Chrome Logomark',
+    code: 'CH.P.Custom',
+    dimensions: {
+      h: `5' 10.8" (1798 mm)`,
+      w: `5' 0" (1524 mm)`,
+      d: `0.5" (13 mm)`,
+    },
+    illumination: false,
+    backerNeeded: false,
+    quantity: 1,
+    visualImage: DEMO_IMG,
+    implImage: DEMO_IMG,
   },
 ]
 
-// Legacy aliases kept for ProductDetailCard / ItemSummary compatibility
-export const CATEGORIES = ['Exterior', 'Interior']
-export const PRODUCTS_BY_CATEGORY: Record<string, Product[]> = {
-  Exterior: WARRANTY_ITEMS.filter((p) => p.category === 'Exterior'),
-  Interior: WARRANTY_ITEMS.filter((p) => p.category === 'Interior'),
+export const SIGNS_BY_LOCATION: Record<string, SignItem[]> = {
+  Chicago: CHICAGO_SIGNS,
 }
