@@ -4,8 +4,6 @@ import { useRouter } from 'next/navigation'
 import { BeldenLogo } from '@/components/belden-logo'
 import { ModulexLogo } from '@/components/modulex-logo'
 
-const DEMO_IMG = '/images/chicago-demo.png'
-
 interface CardDef {
   title: string
   description: string
@@ -20,8 +18,8 @@ const CARDS: CardDef[] = [
   {
     title: 'Warranty Request',
     description: 'Existing signs that require repair or replacement',
-    image: DEMO_IMG,
-    alt: 'Belden warranty request signage',
+    image: '/images/warranty-card.png',
+    alt: 'Chrome purple channel letters close-up',
     buttonLabel: 'Configure Warranty Request',
     buttonAction: 'navigate',
     href: '/warranty',
@@ -29,7 +27,7 @@ const CARDS: CardDef[] = [
   {
     title: 'Exterior Signs',
     description: 'New signs defined for exterior use in the Brand Guidelines',
-    image: DEMO_IMG,
+    image: '/images/exterior-card.png',
     alt: 'Belden exterior building sign',
     buttonLabel: 'Coming Soon',
     buttonAction: 'coming-soon',
@@ -37,8 +35,8 @@ const CARDS: CardDef[] = [
   {
     title: 'Interior Signs',
     description: 'New signs defined for interior use in the Brand Guidelines',
-    image: DEMO_IMG,
-    alt: 'Belden interior lobby sign',
+    image: '/images/interior-card.jpg',
+    alt: 'Belden chrome logomark on interior wall',
     buttonLabel: 'Coming Soon',
     buttonAction: 'coming-soon',
   },
