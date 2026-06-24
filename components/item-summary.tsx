@@ -73,7 +73,7 @@ export function ItemSummary({ items, onSend, allDescriptionsFilled }: ItemSummar
           style={{ accentColor: '#111827' }}
         />
         <label htmlFor="policy-checkbox" className="text-[11px] text-gray-400 leading-relaxed cursor-pointer flex-1">
-          *Modulex will review your request and confirm whether it falls under the Warranty Policies
+          Modulex will review your request and confirm whether it falls under the Warranty Policies
           or if there will be any cost associated with replacement or repair services.
         </label>
       </div>
