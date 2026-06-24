@@ -40,7 +40,7 @@ export function ItemSummary({ items, onSend, allDescriptionsFilled }: ItemSummar
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-gray-400 italic mb-5">Your cart is empty</p>
+        <p className="text-sm text-gray-400 italic mb-5">No items selected yet</p>
       )}
 
       {/* Send Request button */}
