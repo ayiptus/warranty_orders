@@ -25,6 +25,14 @@ const BELDEN_SITES: Record<string, string> = {
   'Tucson': '3610 E. Valencia Road, Tucson, AZ, 85756, USA',
   'Shanghai': '900 Yishan Rd, Xuhui District, Shanghai, 200233, China',
   'Pune Phase 1': 'Plot No. D-228/1, Chakan MIDC Phase II, Village Bhamboli, Taluka Khed, District Pune, Maharashtra, 410507, India',
+  'Pune Phase 2': 'Plot No. D-228/1, Chakan MIDC Phase II, Village Bhamboli, Taluka Khed, District Pune, Maharashtra, 410507, India',
+  'Singapore': '151 Lorong Chuan, #05-01, New Tech Park, Singapore, 556741, Singapore',
+  'Bangalore': '8th Floor, Embassy One, 8, Bellary Rd, Dena Bank Colony, Armane Nagar, Bengaluru, Karnataka, 560032, India',
+  'Dubai': 'Dubai Internet City, Office 201-202 Building 1, Dubai, 500158, United Arab Emirates',
+  'Olen': 'Olen OTN Systems Head Office, Industrielaan 17B 2250, Olen, Belgium',
+  'Neckartenzlingen': 'Stuttgarter Straße 45-51, Neckartenzlingen, 72654, Germany',
+  'Milan': 'Viale Colleoni 25 - Palazzo Pegaso, 20864 Agrate Brianza (MB), Italy',
+  'Blagnac': '17, rue des Briquetiers | F-31700 Blagnac | France',
 }
 
 const REQUIRED_FIELDS: (keyof ClientInfo)[] = ['fullName', 'location', 'email']
