@@ -281,48 +281,62 @@ export function WarrantyForm() {
 
               {/* Dropdown when open */}
               {showSelector && (
-                <div
-                  className="bg-white border border-gray-200 rounded-xl p-4 space-y-3"
-                  style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}
-                >
-                  {locationSigns.length === 0 ? (
-                    <p className="text-sm text-gray-400 italic">
-                      Sign list not yet available for this location.
-                    </p>
-                  ) : (
-                    <select
-                      value={selectedSignId}
-                      onChange={(e) => setSelectedSignId(e.target.value)}
-                      className={inputClass}
-                    >
-                      <option value="">Select item...</option>
-                      {locationSigns.map((sign) => (
-                        <option key={sign.id} value={sign.id}>
-                          {sign.id} - {sign.name}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => { setShowSelector(false); setSelectedSignId('') }}
-                      className="flex-1 bg-gray-100 text-gray-700 text-sm font-medium py-2 rounded-lg hover:bg-gray-200 transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    {selectedSign && (
-                      <button
-                        onClick={handleConfirmItem}
-                        className="flex-1 text-white text-sm font-medium py-2 rounded-lg transition-colors"
-                        style={{ backgroundColor: '#111827' }}
-                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#374151')}
-                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#111827')}
+                <div className="space-y-4">
+                  <div
+                    className="bg-white border border-gray-200 rounded-xl p-4 space-y-3"
+                    style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}
+                  >
+                    {locationSigns.length === 0 ? (
+                      <p className="text-sm text-gray-400 italic">
+                        Sign list not yet available for this location.
+                      </p>
+                    ) : (
+                      <select
+                        value={selectedSignId}
+                        onChange={(e) => setSelectedSignId(e.target.value)}
+                        className={inputClass}
                       >
-                        Add Item
-                      </button>
+                        <option value="">Select item...</option>
+                        {locationSigns.map((sign) => (
+                          <option key={sign.id} value={sign.id}>
+                            {sign.id} - {sign.name}
+                          </option>
+                        ))}
+                      </select>
                     )}
+
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => { setShowSelector(false); setSelectedSignId('') }}
+                        className="flex-1 bg-gray-100 text-gray-700 text-sm font-medium py-2 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      {selectedSign && (
+                        <button
+                          onClick={handleConfirmItem}
+                          className="flex-1 text-white text-sm font-medium py-2 rounded-lg transition-colors"
+                          style={{ backgroundColor: '#111827' }}
+                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#374151')}
+                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#111827')}
+                        >
+                          Add Item
+                        </button>
+                      )}
+                    </div>
                   </div>
+
+                  {/* Reactive specs preview — updates instantly on dropdown change */}
+                  {selectedSign && (
+                    <SignDetailCard
+                      key={`preview-${selectedSign.id}`}
+                      item={{ id: `preview-${selectedSign.id}`, sign: selectedSign, warrantyDescription: '' }}
+                      warrantyDescription=""
+                      onDescriptionChange={() => {}}
+                      onRemove={() => { setSelectedSignId('') }}
+                      isPreview
+                    />
+                  )}
                 </div>
               )}
             </div>

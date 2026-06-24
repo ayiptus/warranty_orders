@@ -8,6 +8,7 @@ interface SignDetailCardProps {
   warrantyDescription: string
   onDescriptionChange: (value: string) => void
   onRemove: () => void
+  isPreview?: boolean
 }
 
 export function SignDetailCard({
@@ -15,6 +16,7 @@ export function SignDetailCard({
   warrantyDescription,
   onDescriptionChange,
   onRemove,
+  isPreview = false,
 }: SignDetailCardProps) {
   const { sign } = item
 
@@ -30,13 +32,23 @@ export function SignDetailCard({
           <h4 className="text-base font-semibold text-gray-900 mt-0.5">{sign.name}</h4>
           <p className="text-xs text-gray-400 mt-0.5">Code: {sign.code}</p>
         </div>
-        <button
-          onClick={onRemove}
-          className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded transition-colors ml-3 flex-shrink-0"
-          aria-label="Remove item"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        {isPreview ? (
+          <button
+            onClick={onRemove}
+            className="text-xs text-gray-400 hover:text-gray-700 px-2 py-1 rounded transition-colors ml-3 flex-shrink-0"
+            aria-label="Clear selection"
+          >
+            Clear
+          </button>
+        ) : (
+          <button
+            onClick={onRemove}
+            className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded transition-colors ml-3 flex-shrink-0"
+            aria-label="Remove item"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       {/* Image area — single full-width with dual labels */}
@@ -81,20 +93,22 @@ export function SignDetailCard({
         </div>
       </div>
 
-      {/* Warranty description textarea */}
-      <div>
-        <label className="block text-xs font-medium text-gray-600 mb-1.5">
-          Please describe briefly the warranty / replacement request{' '}
-          <span className="text-red-500">*</span>
-        </label>
-        <textarea
-          value={warrantyDescription}
-          onChange={(e) => onDescriptionChange(e.target.value)}
-          placeholder="Enter your request here"
-          rows={3}
-          className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"
-        />
-      </div>
+      {/* Warranty description textarea — hidden in preview mode */}
+      {!isPreview && (
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1.5">
+            Please describe briefly the warranty / replacement request{' '}
+            <span className="text-red-500">*</span>
+          </label>
+          <textarea
+            value={warrantyDescription}
+            onChange={(e) => onDescriptionChange(e.target.value)}
+            placeholder="Enter your request here"
+            rows={3}
+            className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"
+          />
+        </div>
+      )}
     </div>
   )
 }
