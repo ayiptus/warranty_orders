@@ -8,6 +8,25 @@ import { SignDetailCard } from '@/components/sign-detail-card'
 import { ItemSummary } from '@/components/item-summary'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
+// Belden sites address mapping
+const BELDEN_SITES: Record<string, string> = {
+  'Cobourg': '130 Willmott Street, Cobourg, Ontario, K9A 4M3, Canada',
+  'Montreal': '2600 Alfred-Nobel Blvd, St-Laurent, QC, H4S 2B4, Canada',
+  'Nogales': 'Ave. de los Nogales # 290, Fracc. San Carlos, Nogales, Sonora, Mexico',
+  'Tijuana': 'Blvd. Insurgentes # 8272 Col. Libramiento, Tijuana, Baja California, Mexico',
+  'Chicago': '8420 W Bryn Mawr Ave., Suite 1030, Chicago, IL, 60631, USA',
+  'Cornelius': '10855 Bailey Rd, Ste 300, Cornelius, NC, 28031, USA',
+  'Indianapolis': '1320 City Center Drive, Suite 100, Carmel, IN, 46032, USA',
+  'Richmond I': '2200 U.S. Highway 27 South, Richmond, IN, 47374, USA',
+  'Richmond II': '1411 NW 11th St, Richmond, IN, 47374, USA',
+  'Richmond III': '350 N.W. N Street, Richmond, IN, 47374, USA',
+  'Santa Clara': '2953 Bunker Hill Lane, Santa Clara, CA, 95054, USA',
+  'St. Louis': '1 N. Brentwood Blvd. 15th Floor, St. Louis, MO, 63105, USA',
+  'Tucson': '3610 E. Valencia Road, Tucson, AZ, 85756, USA',
+  'Shanghai': '900 Yishan Rd, Xuhui District, Shanghai, 200233, China',
+  'Pune Phase 1': 'Plot No. D-228/1, Chakan MIDC Phase II, Village Bhamboli, Taluka Khed, District Pune, Maharashtra, 410507, India',
+}
+
 const REQUIRED_FIELDS: (keyof ClientInfo)[] = ['fullName', 'location', 'email']
 
 const inputClass =
@@ -198,7 +217,9 @@ export function WarrantyForm() {
                   <select
                     value={clientInfo.location}
                     onChange={(e) => {
-                      setClientInfo({ ...clientInfo, location: e.target.value })
+                      const newLocation = e.target.value
+                      const newAddress = BELDEN_SITES[newLocation] || ''
+                      setClientInfo({ ...clientInfo, location: newLocation, propertyAddress: newAddress })
                       if (fieldErrors.location) setFieldErrors({ ...fieldErrors, location: undefined })
                       // Reset sign selector when location changes
                       setShowSelector(false)
@@ -341,6 +362,7 @@ export function WarrantyForm() {
             <ItemSummary
               items={items}
               onSend={handleSendRequest}
+              allDescriptionsFilled={items.length > 0 && items.every((item) => (itemDescriptions[item.id] ?? '').trim() !== '')}
             />
           </div>
         </div>

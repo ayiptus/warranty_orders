@@ -26,8 +26,6 @@ export const LOCATIONS = [
   'Blagnac',
 ]
 
-const DEMO_IMG = '/images/chicago-demo.png'
-
 export const CHICAGO_SIGNS: SignItem[] = [
   {
     id: 'IN-001',
@@ -41,8 +39,8 @@ export const CHICAGO_SIGNS: SignItem[] = [
     illumination: true,
     backerNeeded: false,
     quantity: 1,
-    visualImage: DEMO_IMG,
-    implImage: DEMO_IMG,
+    visualImage: '/images/IN-001.png',
+    implImage: '/images/IN-001.png',
   },
   {
     id: 'IN-003',
@@ -56,8 +54,8 @@ export const CHICAGO_SIGNS: SignItem[] = [
     illumination: false,
     backerNeeded: true,
     quantity: 1,
-    visualImage: DEMO_IMG,
-    implImage: DEMO_IMG,
+    visualImage: '/images/IN-003.png',
+    implImage: '/images/IN-003.png',
   },
   {
     id: 'IN-004',
@@ -71,8 +69,8 @@ export const CHICAGO_SIGNS: SignItem[] = [
     illumination: false,
     backerNeeded: false,
     quantity: 1,
-    visualImage: DEMO_IMG,
-    implImage: DEMO_IMG,
+    visualImage: '/images/IN-004.png',
+    implImage: '/images/IN-004.png',
   },
   {
     id: 'IN-006',
@@ -86,8 +84,8 @@ export const CHICAGO_SIGNS: SignItem[] = [
     illumination: false,
     backerNeeded: false,
     quantity: 1,
-    visualImage: DEMO_IMG,
-    implImage: DEMO_IMG,
+    visualImage: '/images/IN-006.png',
+    implImage: '/images/IN-006.png',
   },
 ]
 
